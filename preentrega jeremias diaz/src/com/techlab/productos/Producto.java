@@ -2,10 +2,17 @@ package com.techlab.productos;
 
 public class Producto {
 
+    private static long contadorId = 0;
+
     private Long id;
     private String nombre;
     private Double precio;
     private Integer stock;
+
+    public Producto() {
+        contadorId++;
+        this.id = contadorId;
+    }
 
     public Long getId() {
         return id;

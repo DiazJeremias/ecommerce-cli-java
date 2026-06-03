@@ -4,16 +4,21 @@ import java.util.List;
 
 public class Pedido {
 
+    private static long contadorId = 0;
+
    private Long id;
    private List<LineaPedido> productList;
    private Double total;
 
    public Pedido(List<LineaPedido> productList){
-    Double subtotal=0.0;
-    this.productList = productList;
+       contadorId++;
+       this.id = contadorId;
+
+       Double subtotal = 0.0;
+       this.productList = productList;
 
        for(LineaPedido linea: productList){
-           subtotal +=linea.getProducto().getPrecio() * linea.getCantProducto();
+           subtotal += linea.getProducto().getPrecio() * linea.getCantProducto();
        }
 
        total = subtotal;
