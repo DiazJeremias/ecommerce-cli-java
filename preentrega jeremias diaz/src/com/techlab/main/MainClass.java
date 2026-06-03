@@ -6,7 +6,7 @@ import com.techlab.pedidos.ABMPedido;
 import com.techlab.pedidos.Pedido;
 import com.techlab.productos.ABMProducto;
 import com.techlab.productos.Producto;
-import com.techlab.productos.ProductoLinea;
+import com.techlab.pedidos.LineaPedido;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +61,7 @@ public class MainClass {
                 case "g":
                     flag=false;
                 default:
+                    System.out.println("Opción inválida. Vuelva a intentarlo:");
             }
         }
 
@@ -73,14 +74,14 @@ public class MainClass {
         Integer contadorProductos =  Integer.valueOf(cantProductosAAgregar);
 
 
-        List<ProductoLinea> productos = new ArrayList<>();
+        List<LineaPedido> productos = new ArrayList<>();
         while (contadorProductos>0){
             System.out.println("Ingresar id producto: ");
             String idProducto = scanner.nextLine();
             System.out.println("Ingresar cantidad productos: ");
             Integer cantProducto = Integer.valueOf(scanner.nextLine());
 
-            ProductoLinea prodLinea = new ProductoLinea();
+            LineaPedido prodLinea = new LineaPedido();
             Producto producto = new Producto();
             producto.setId(Long.valueOf(idProducto));
             producto.setStock(cantProducto);
@@ -123,7 +124,7 @@ public class MainClass {
 
             case "S":
                 actualizarStockProductos(productos,abmProducto);
-               pedido = new Pedido(productos);
+                pedido = new Pedido(productos);
                 break;
             case "N":
 
@@ -137,17 +138,17 @@ public class MainClass {
         return pedido;
     }
 
-    private static void actualizarStockProductos(List<ProductoLinea> productos, ABMProducto abmProducto) {
-        for(ProductoLinea productoActual : productos){
+    private static void actualizarStockProductos(List<LineaPedido> productos, ABMProducto abmProducto) {
+        for(LineaPedido productoActual : productos){
             abmProducto.actualizarStock(productoActual.getProducto(),productoActual.getCantProducto());
         }
     }
 
-    private static void mostrarProductosLinea(List<ProductoLinea> productos) {
-        System.out.printf("%-5s %-15s %-10s %-10s %-15s%n", "ID", "Nombre", "Precio", "Stock en tienda", "Cant Producto pedidoa");
+    private static void mostrarProductosLinea(List<LineaPedido> productos) {
+        System.out.printf("%-5s %-15s %-10s %-10s %-15s%n", "ID", "Nombre", "Precio", "Stock", "Cant Producto pedido");
         System.out.println("-----------------------------------------------------------------------");
 
-        for(ProductoLinea pLinea : productos){
+        for(LineaPedido pLinea : productos){
             pLinea.mostrarProductos();
         }
 

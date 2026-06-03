@@ -1,22 +1,18 @@
 package com.techlab.pedidos;
 
-import com.techlab.productos.Producto;
-import com.techlab.productos.ProductoLinea;
-
 import java.util.List;
-import java.util.Objects;
 
 public class Pedido {
 
    private Long id;
-   private List<ProductoLinea> productList;
+   private List<LineaPedido> productList;
    private Double total;
 
-   public Pedido(List<ProductoLinea> productList){
+   public Pedido(List<LineaPedido> productList){
     Double subtotal=0.0;
     this.productList = productList;
 
-       for(ProductoLinea linea: productList){
+       for(LineaPedido linea: productList){
            subtotal +=linea.getProducto().getPrecio() * linea.getCantProducto();
        }
 
@@ -31,11 +27,11 @@ public class Pedido {
         this.id = id;
     }
 
-    public List<ProductoLinea> getProductList() {
+    public List<LineaPedido> getProductList() {
         return productList;
     }
 
-    public void setProductList(List<ProductoLinea> productList) {
+    public void setProductList(List<LineaPedido> productList) {
         this.productList = productList;
     }
 
@@ -44,7 +40,7 @@ public class Pedido {
     }
 
     public void mostrarProductosDelPedido(){
-       for(ProductoLinea pLinea: productList){
+       for(LineaPedido pLinea: productList){
            System.out.println("Nombre producto: " + pLinea.getProducto().getNombre());
            System.out.println("Precio: " + pLinea.getProducto().getPrecio());
            System.out.println("Cantidad: " + pLinea.getCantProducto());

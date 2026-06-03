@@ -1,6 +1,8 @@
-package com.techlab.productos;
+package com.techlab.pedidos;
 
-public class ProductoLinea {
+import com.techlab.productos.Producto;
+
+public class LineaPedido {
 
     private Producto producto;
     private Integer cantProducto;
