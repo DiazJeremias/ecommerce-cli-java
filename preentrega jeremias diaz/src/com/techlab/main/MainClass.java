@@ -10,6 +10,7 @@ import com.techlab.pedidos.LineaPedido;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class MainClass {
@@ -17,12 +18,12 @@ public class MainClass {
     public static void main(String[] args){
         ABMPedido abmPedidos = new ABMPedido();
         ABMProducto abmProductos = new ABMProducto();
+        Scanner scanner = new Scanner(System.in);
 
-        Scanner scanner = new Scanner(System.in);  // Crear scanner para entrada
-    boolean flag= true;
+        boolean flag= true;
         while(flag) {
 
-
+            System.out.println("\n--- MENÚ PRINCIPAL ---");
             System.out.println("a. Agregar producto: ");
             System.out.println("b. Listar Productos: ");
             System.out.println("c. Buscar/Actualizar Producto: ");
@@ -32,7 +33,7 @@ public class MainClass {
             System.out.println("g. Salir: ");
 
 
-            String nombre = scanner.nextLine();        // Leer línea de texto
+            String nombre = scanner.nextLine().trim().toLowerCase();
 
             switch (nombre) {
                 case "a":
@@ -44,8 +45,14 @@ public class MainClass {
                     abmProductos.mostrarProductos();
                     break;
                 case "c":
-                    Producto productoActualizado = menuAgregarProducto(scanner);
-                    abmProductos.actualizarProducto(productoActualizado);
+                    Producto productoActualizado = menuBuscarProducto(scanner, abmProductos);
+                    if (productoActualizado != null) {
+                        Producto productoModificado = menuActualizarProducto(scanner, productoActualizado);
+                        if (productoModificado != null) {
+                            abmProductos.actualizarProducto(productoActualizado);
+                            System.out.println("Producto actualizado con éxito.");
+                        }
+                    }
                     break;
                 case "d":
                     Producto productoAEliminar = menuEliminarProducto(scanner);
@@ -56,16 +63,19 @@ public class MainClass {
                     break;
                 case "f":
                     Pedido pedidoNuevo = menuAgregarPedido(scanner,abmProductos);
-                    abmPedidos.agregarPedido(pedidoNuevo);
+                    if (pedidoNuevo != null) {
+                        abmPedidos.agregarPedido(pedidoNuevo);
+                    }
                     break;
                 case "g":
                     flag=false;
+                    System.out.println("Gracias por utilizar nuestro sistema.");
+                    break;
                 default:
                     System.out.println("Opción inválida. Vuelva a intentarlo:");
             }
         }
-
-        scanner.close();                           // Cerrar scanner
+        scanner.close();
     }
 
     private static Pedido menuAgregarPedido(Scanner scanner,ABMProducto abmProducto) {
@@ -168,8 +178,6 @@ public class MainClass {
 
         System.out.println("Ingresar nombre producto: ");
         String nombreProducto = scanner.nextLine();
-        System.out.println("Ingresar id producto: ");
-        String idProducto = scanner.nextLine();
         System.out.println("Ingresar precio producto: ");
         String precioProducto = scanner.nextLine();
         System.out.println("Ingresar stock producto: ");
@@ -179,9 +187,68 @@ public class MainClass {
         producto.setNombre(nombreProducto);
         producto.setPrecio(Double.valueOf(precioProducto));
         producto.setStock(Integer.valueOf(stockProducto));
-        producto.setId(Long.valueOf(idProducto));
 
         return producto;
 
+    }
+
+    private static Producto menuBuscarProducto(Scanner scanner, ABMProducto abmProducto) {
+        System.out.println("Ingrese el id del producto que desea buscar: ");
+        Long idProducto = Long.valueOf(scanner.nextLine());
+
+        Producto productoEncontrado = abmProducto.buscarPorId(idProducto);
+        if(productoEncontrado==null){
+            System.out.println("El producto no existe.");
+            return null;
+        }
+
+        System.out.println("\n--- INFORMACIÓN DEL PRODUCTO ENCONTRADO ---");
+        System.out.println("ID:     " + productoEncontrado.getId());
+        System.out.println("Nombre: " + productoEncontrado.getNombre());
+        System.out.println("Precio: $" + productoEncontrado.getPrecio());
+        System.out.println("Stock:  " + productoEncontrado.getStock());
+        System.out.println("-------------------------------------------\n");
+
+        return productoEncontrado;
+    }
+
+    private static Producto menuActualizarProducto(Scanner scanner, Producto producto) {
+        System.out.println("Desea actualizar el producto? S/N");
+        String confirmacion = scanner.nextLine().trim().toUpperCase();
+
+        if(!confirmacion.equals("S")){
+            System.out.println("No hubo modificaciones.");
+            return null;
+        }
+
+        System.out.println("Ingrese el nuevo nombre: ");
+        producto.setNombre(scanner.nextLine());
+
+        producto.setPrecio(leerNumeroPositivo(scanner, "Ingrese el nuevo precio: ",
+                "El precio debe ser un valor positivo. Intente de nuevo: ", false));
+
+        producto.setStock(Integer.valueOf((int) leerNumeroPositivo(scanner, "Ingrese el nuevo stock: ",
+                "El stock no puede ser valor negativo. Intente de nuevo: ", true)));
+
+        return producto;
+    }
+
+    private static double leerNumeroPositivo(Scanner scanner, String mensaje, String mensajeError, boolean permiteCero) {
+        double numero = 0;
+        while (true) {
+            try {
+                System.out.println(mensaje);
+                numero = Double.valueOf(scanner.nextLine());
+                if(permiteCero && numero >= 0){
+                    break;
+                } else if (!permiteCero && numero > 0) {
+                    break;
+                }
+                System.out.println(mensajeError);
+            } catch (NumberFormatException e) {
+                System.out.println("Error: Debe ingresar un valor numérico válido.");
+            }
+        }
+        return numero;
     }
 }

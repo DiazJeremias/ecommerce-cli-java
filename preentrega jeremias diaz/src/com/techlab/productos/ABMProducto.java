@@ -82,17 +82,25 @@ public class ABMProducto {
     }
 
     public void mostrarProductos(){
+        System.out.printf("%-5s %-15s %-10s %-10s%n", "ID", "Nombre", "Precio", "Stock");
+        System.out.println("---------------------------------------------------");
 
-            System.out.printf("%-5s %-15s %-10s %-10s%n", "ID", "Nombre", "Precio", "Stock");
-            System.out.println("---------------------------------------------------");
-
-            for (Producto p : productList) {
-                System.out.printf("%-5d %-15s %-10.2f %-10d%n",
+        for (Producto p : productList) {
+            System.out.printf("%-5d %-15s %-10.2f %-10d%n",
                         p.getId(),
                         p.getNombre(),
                         p.getPrecio(),
                         p.getStock());
             }
 
+    }
+
+    public Producto buscarPorId(Long id){
+        for (Producto producto : productList) {
+            if (producto.getId().equals(id)) {
+                return producto;
+            }
+        }
+        return null;
     }
 }
